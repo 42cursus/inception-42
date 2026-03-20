@@ -23,11 +23,6 @@ COPY conf/.bashrc /root/.bashrc
 
 RUN apk update && apk add --no-cache nginx openssl curl ca-certificates
 
-RUN openssl req -x509 -nodes \
-  -out /etc/ssl/abelov.42.fr.crt \
-  -keyout /etc/ssl/private/abelov.42.fr.key \
-  -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=abelov.42.fr/UID=abelov"
-
 COPY conf/server.conf /etc/nginx/http.d/default.conf
 
 RUN mkdir -p /var/run/nginx
