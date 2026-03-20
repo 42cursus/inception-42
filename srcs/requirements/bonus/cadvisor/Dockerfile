@@ -1,5 +1,5 @@
 #################################################################
-# Creates a Redis Server image based on Debian Bookworm
+# Creates a Cadvisor Server image based on Debian Bookworm
 #                    ##        .
 #              ## ## ##       ==
 #           ## ## ## ##      ===
@@ -17,13 +17,11 @@
 FROM debian:bookworm
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends redis-server && \
+    apt-get install -y --no-install-recommends wget ca-certificates && \
+    wget -O /usr/local/bin/cadvisor https://github.com/google/cadvisor/releases/download/v0.49.1/cadvisor-v0.49.1-linux-amd64 && \
+    chmod +x /usr/local/bin/cadvisor && \
     rm -rf /var/lib/apt/lists/*
 
-COPY tools/redis.conf /etc/redis/redis.conf
-COPY tools/run.sh /usr/local/bin/run.sh
-RUN chmod +x /usr/local/bin/run.sh
+EXPOSE 8080
 
-EXPOSE 6379
-
-CMD ["/usr/local/bin/run.sh"]
+CMD ["/usr/local/bin/cadvisor"]

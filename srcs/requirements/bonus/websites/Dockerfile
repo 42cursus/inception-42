@@ -1,5 +1,5 @@
 #################################################################
-# Creates a Redis Server image based on Debian Bookworm
+# Creates a NodeJS Server image based on Debian Bookworm
 #                    ##        .
 #              ## ## ##       ==
 #           ## ## ## ##      ===
@@ -17,13 +17,15 @@
 FROM debian:bookworm
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends redis-server && \
+    apt-get install -y --no-install-recommends nodejs npm && \
     rm -rf /var/lib/apt/lists/*
 
-COPY tools/redis.conf /etc/redis/redis.conf
-COPY tools/run.sh /usr/local/bin/run.sh
-RUN chmod +x /usr/local/bin/run.sh
+WORKDIR /opt/site
+COPY tools/package.json /opt/site/package.json
+RUN npm install --omit=dev
+COPY tools/server.js /opt/site/server.js
+COPY tools/public /opt/site/public
 
-EXPOSE 6379
+EXPOSE 3000
 
-CMD ["/usr/local/bin/run.sh"]
+CMD ["node", "server.js"]

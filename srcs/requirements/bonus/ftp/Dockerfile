@@ -1,5 +1,5 @@
 #################################################################
-# Creates a Redis Server image based on Debian Bookworm
+# Creates an FTP Server image based on Debian Bookworm
 #                    ##        .
 #              ## ## ##       ==
 #           ## ## ## ##      ===
@@ -17,13 +17,12 @@
 FROM debian:bookworm
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends redis-server && \
+    apt-get install -y --no-install-recommends vsftpd && \
     rm -rf /var/lib/apt/lists/*
 
-COPY tools/redis.conf /etc/redis/redis.conf
 COPY tools/run.sh /usr/local/bin/run.sh
 RUN chmod +x /usr/local/bin/run.sh
 
-EXPOSE 6379
+EXPOSE 21 40000-40005
 
 CMD ["/usr/local/bin/run.sh"]

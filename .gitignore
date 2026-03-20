@@ -159,3 +159,4 @@ tags
 [._]*.un~
 en.subject*.*
 /srcs/.env
+/examples/

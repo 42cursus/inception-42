@@ -55,6 +55,29 @@ if [ ! -f /var/www/html/wp-config.php ]; then
     --role=author \
     --user_pass="$WP_USER_PASSWORD" \
     --allow-root
+
+  echo "[i] Installing and enabling Redis cache plugin..."
+  wp plugin install redis-cache --activate --allow-root
+  if ! wp config set WP_REDIS_HOST "${REDIS_HOST:-redis}" --allow-root; then
+    echo "[!] WARNING: Could not set WP_REDIS_HOST in wp-config.php"
+  fi
+fi
+
+if wp core is-installed --allow-root >/dev/null 2>&1; then
+  if ! wp plugin is-installed redis-cache --allow-root >/dev/null 2>&1; then
+    wp plugin install redis-cache --activate --allow-root
+  elif ! wp plugin is-active redis-cache --allow-root >/dev/null 2>&1; then
+    wp plugin activate redis-cache --allow-root
+  fi
+
+  if ! wp config set WP_REDIS_HOST "${REDIS_HOST:-redis}" --allow-root; then
+    echo "[!] WARNING: Could not set WP_REDIS_HOST in wp-config.php"
+  fi
+  if wp help redis >/dev/null 2>&1; then
+    if ! wp redis enable --allow-root; then
+      echo "[!] WARNING: Redis plugin activation command failed"
+    fi
+  fi
 fi
 
 echo "[i] Starting PHP-FPM..."

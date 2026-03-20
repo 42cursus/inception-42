@@ -1,5 +1,5 @@
 #################################################################
-# Creates a Redis Server image based on Debian Bookworm
+# Creates a Adminer Server image based on Debian Bookworm
 #                    ##        .
 #              ## ## ##       ==
 #           ## ## ## ##      ===
@@ -17,13 +17,12 @@
 FROM debian:bookworm
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends redis-server && \
+    apt-get install -y --no-install-recommends php-cli php-mysql wget ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-COPY tools/redis.conf /etc/redis/redis.conf
 COPY tools/run.sh /usr/local/bin/run.sh
 RUN chmod +x /usr/local/bin/run.sh
 
-EXPOSE 6379
+EXPOSE 80
 
 CMD ["/usr/local/bin/run.sh"]

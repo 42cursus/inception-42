@@ -35,6 +35,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
     php82-xml \
     php82-zip \
     php82-phar \
+    php82-tokenizer \
     wget \
     unzip \
     mariadb-client

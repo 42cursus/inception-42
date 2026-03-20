@@ -23,7 +23,8 @@ COMPOSE_FILE	= $(SRC_DIR)/docker-compose.yml
 SECRETS_FILES	:= db_password.txt \
 					db_root_password.txt \
 					wp_admin_password.txt \
-					wp_user_password.txt
+					wp_user_password.txt \
+					ftp_password.txt
 SSL_CONFIG		:= $(SECRETS_DIR)/req.cnf
 SSL_KEY			:= $(SECRETS_DIR)/private.key
 SSL_CERT		:= $(SECRETS_DIR)/certificate.crt

@@ -40,6 +40,7 @@ services:
       DB_PASSWORD_FILE: /run/secrets/db_password
       WP_ADMIN_PASSWORD_FILE: /run/secrets/wp_admin_password
       WP_USER_PASSWORD_FILE: /run/secrets/wp_user_password
+      REDIS_HOST: redis
     volumes:
       - wordpress:/var/www/html
     secrets:
@@ -58,7 +59,6 @@ services:
     restart: always
     ports:
       - "443:443"
-      - "80:80"
     volumes:
       - wordpress:/var/www/html
     env_file:
@@ -71,6 +71,74 @@ services:
     depends_on:
       - wordpress
 
+  redis:
+    container_name: redis
+    image: redis:42
+    build: requirements/bonus/redis
+    restart: always
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - inception
+
+  ftp:
+    container_name: ftp
+    image: ftp:42
+    build: requirements/bonus/ftp
+    restart: always
+    environment:
+      FTP_USER: ${FTP_USER}
+      FTP_PASSWORD_FILE: /run/secrets/ftp_password
+    volumes:
+      - wordpress:/home/${FTP_USER}/ftp/files
+    secrets:
+      - ftp_password
+    ports:
+      - "21:21"
+      - "20:20"
+      - "40000-40005:40000-40005"
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+
+  adminer:
+    container_name: adminer
+    image: adminer:42
+    build: requirements/bonus/adminer
+    restart: always
+    ports:
+      - "600:80"
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+
+  website:
+    container_name: website
+    image: website:42
+    build: requirements/bonus/websites
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - inception
+
+  cadvisor:
+    container_name: cadvisor
+    image: cadvisor:42
+    build: requirements/bonus/cadvisor
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - inception
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
 secrets:
   db_root_password:
     file: ../secrets/db_root_password.txt
@@ -80,6 +148,8 @@ secrets:
     file: ../secrets/wp_admin_password.txt
   wp_user_password:
     file: ../secrets/wp_user_password.txt
+  ftp_password:
+    file: ../secrets/ftp_password.txt
   ssl_certificate:
     file: ../secrets/certificate.crt
   ssl_private_key:

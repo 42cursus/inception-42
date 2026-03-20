@@ -1,0 +1,9 @@
+{
+  "name": "inception-static-website",
+  "version": "1.0.0",
+  "main": "server.js",
+  "private": true,
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
