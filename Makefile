@@ -32,7 +32,7 @@ SSL_CERT		:= $(SECRETS_DIR)/certificate.crt
 SECRETS			:= $(SECRETS_FILES:%=$(SECRETS_DIR)/%)
 SSL_ASSETS		:= $(SSL_CONFIG) $(SSL_KEY) $(SSL_CERT)
 
-all: up
+all: up clion-index
 
 $(SECRETS_DIR)/%.txt:
 		@if [ ! -d $(@D) ]; then mkdir -p $(@D); fi
@@ -100,6 +100,10 @@ build: $(SECRETS) $(SSL_ASSETS)
 
 down:
 		@docker compose -f $(COMPOSE_FILE) down
+
+## clion-index
+clion-index:
+	$(CC) -x c -fsyntax-only /dev/null
 
 ## clean
 clean: down

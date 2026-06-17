@@ -86,11 +86,13 @@ services:
     image: ftp:42
     build: requirements/bonus/ftp
     restart: always
+    env_file: .env
     environment:
       FTP_USER: ${FTP_USER}
       FTP_PASSWORD_FILE: /run/secrets/ftp_password
     volumes:
       - wordpress:/home/${FTP_USER}/ftp/files
+      - wordpress:/var/run/vsftpd/empty
     secrets:
       - ftp_password
     ports:
